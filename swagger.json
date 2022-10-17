@@ -12,10 +12,46 @@
   "host": "localhost:8080",
   "basePath": "/api/tracks",
   "paths": {
+    "/token": {
+      "get": {
+        "tags": ["Tracks"],
+        "summary": "Retrieve a bearer token based on user credential",
+
+        "parameters": [
+          {
+            "name": "email",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "password",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "token": "string"
+            }
+          }
+        }
+      }
+    },
     "/": {
       "post": {
         "tags": ["Tracks"],
         "description": "Create new a track in system",
+        "security": {
+          "bearerAuth": []
+        },
         "parameters": [
           {
             "name": "ISRC",
@@ -37,6 +73,9 @@
       "get": {
         "tags": ["Tracks"],
         "summary": "Retrieve a track by ISRC",
+        "security": {
+          "bearerAuth": []
+        },
         "parameters": [
           {
             "name": "isrc",
@@ -61,6 +100,9 @@
       "get": {
         "tags": ["Tracks"],
         "summary": "Retrieve tracks by artist name",
+        "security": {
+          "bearerAuth": []
+        },
         "parameters": [
           {
             "name": "name",
