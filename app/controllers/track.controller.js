@@ -132,3 +132,30 @@ exports.create = (req, res) => {
     }
   });
 };
+
+// Retrieve a single Track by ISRC from the database.
+exports.findByISRC = (req, res) => {
+  const isrc = req.params.isrc;
+  var condition = isrc ? { isrc: isrc } : null;
+
+  Track.findAll({
+    where: condition,
+    include: [{ model: Artist, attributes: ["name"] }],
+  })
+    .then((data) => {
+      if (data.length) {
+        res.send(data[0]);
+      } else {
+        res.send({
+          message: "No entry found",
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message ||
+          "Some error occurred while retrieving an track by ISRC.",
+      });
+    });
+};
