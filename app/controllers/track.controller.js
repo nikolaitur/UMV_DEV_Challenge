@@ -159,3 +159,23 @@ exports.findByISRC = (req, res) => {
       });
     });
 };
+
+// Find Tracks by artist name
+exports.findByArtist = (req, res) => {
+  const name = req.query.name;
+  var condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
+
+  Track.findAll({
+    include: [{ model: Artist, attributes: ["name"], where: condition }],
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message ||
+          "Some error occurred while retrieving an track by artist name.",
+      });
+    });
+};
