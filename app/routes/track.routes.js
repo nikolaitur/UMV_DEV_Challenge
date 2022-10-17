@@ -6,10 +6,10 @@ module.exports = (app) => {
   // Create a new Track
   router.post("/", tracks.verifyToken, tracks.create);
 
-  // Retrieve a Track by ISRC
+  // Retrieve a track by ISRC
   router.get("/isrc/:isrc", tracks.verifyToken, tracks.findByISRC);
 
-  // Retrieve a Track by artist
+  // Retrieve tracks by artist name
   router.get("/artist", tracks.verifyToken, tracks.findByArtist);
 
   // Get Oauth Bearer token

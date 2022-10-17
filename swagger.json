@@ -1,0 +1,123 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Music Tracks with CRUD",
+    "description": "A REST-API for storing metadata of music tracks to a Relational Database, fetching the metadata from the external Spotify REST API.",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "host": "localhost:8080",
+  "basePath": "/api/tracks",
+  "paths": {
+    "/": {
+      "post": {
+        "tags": ["Tracks"],
+        "description": "Create new a track in system",
+        "parameters": [
+          {
+            "name": "ISRC",
+            "in": "body",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Successfully created a Track record"
+          }
+        }
+      }
+    },
+    "/isrc/{isrc}": {
+      "get": {
+        "tags": ["Tracks"],
+        "summary": "Retrieve a track by ISRC",
+        "parameters": [
+          {
+            "name": "isrc",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Track"
+            }
+          }
+        }
+      }
+    },
+    "/artist": {
+      "get": {
+        "tags": ["Tracks"],
+        "summary": "Retrieve tracks by artist name",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Tracks"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Track": {
+      "required": ["ISRC", "_id", "title"],
+      "properties": {
+        "_id": {
+          "type": "integer",
+          "uniqueItems": true
+        },
+        "ISRC": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "SpotifyImageURI": {
+          "type": "string"
+        },
+        "artists": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "Tracks": {
+      "type": "array",
+      "$ref": "#/definitions/Track"
+    }
+  },
+  "schemes": ["http"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"]
+}

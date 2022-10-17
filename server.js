@@ -26,6 +26,11 @@ db.sequelize
     console.log("Failed to sync db: " + err.message);
   });
 
+const swaggerUi = require("swagger-ui-express"),
+  swaggerDocument = require("./swagger.json");
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 // simple route
 app.get("/", (req, res) => {
   res.json({ message: "Welcome" });
