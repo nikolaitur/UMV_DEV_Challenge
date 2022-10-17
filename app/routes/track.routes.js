@@ -12,5 +12,8 @@ module.exports = (app) => {
   // Retrieve a Track by artist
   router.get("/artist", tracks.verifyToken, tracks.findByArtist);
 
+  // Get Oauth Bearer token
+  router.get("/token", tracks.getToken);
+
   app.use("/api/tracks", router);
 };

@@ -1,4 +1,5 @@
 const request = require("request");
+const jwt = require("jsonwebtoken");
 
 const db = require("../models");
 const Track = db.tracks;
@@ -7,6 +8,63 @@ const Op = db.Sequelize.Op;
 
 const spotify_client_id = "8209293ddf804ef6af53cedaf26540b1";
 const spotify_client_secret = "89c9543fbcfc4dca8961b3ea13d0a2b0";
+
+function isISRCUnique(isrc) {
+  return Track.count({ where: { isrc: isrc } }).then((count) => {
+    if (count != 0) {
+      return false;
+    }
+    return true;
+  });
+}
+
+exports.verifyToken = (req, res, next) => {
+  //Auth header value = > send token into header
+
+  const bearerHeader = req.headers["authorization"];
+  console.log(bearerHeader);
+  //check if bearer is undefined
+  if (typeof bearerHeader !== "undefined") {
+    //split the space at the bearer
+    const bearer = bearerHeader.split(" ");
+    //Get token from string
+    const bearerToken = bearer[1];
+
+    console.log(bearerToken);
+
+    //set the token
+    req.token = bearerToken;
+
+    //next middleweare
+    next();
+  } else {
+    //Fobidden
+    res.sendStatus(403);
+  }
+};
+
+exports.getToken = (req, res) => {
+  if (!req.body.email || !req.body.password) {
+    res.status(400).send({
+      message: "Wrong credential",
+    });
+    return;
+  }
+
+  //Mock user
+  const user = {
+    id: Date.now(),
+    userEmail: req.body.email,
+    password: req.body.password,
+  };
+
+  //send abpve as payload
+  jwt.sign({ user }, "secretkey", (err, token) => {
+    res.json({
+      token,
+    });
+  });
+};
 
 // Create and Save a new Track
 exports.create = (req, res) => {
